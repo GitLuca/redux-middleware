@@ -1,26 +1,48 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useCallback, useEffect } from "react";
+import { connect, ConnectedProps, useDispatch } from "react-redux";
+import { initFetch } from "./api/postApi";
+import PostList from "./components/Posts/PostList";
+import UserList from "./components/Users/UserList";
+import { getMode } from "./store/selectors";
+import { setMode } from "./store/slice";
 
-function App() {
+const App = ({ mode, setModeAction }: PropsFromRedux) => {
+  const handleSelect = useCallback(
+    (e) => {
+      setModeAction(e.target.value);
+    },
+    [setModeAction]
+  );
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const meta = initFetch(mode);
+    dispatch(meta);
+  }, [dispatch, mode]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <select value={mode} onChange={handleSelect}>
+        <option key="posts" value="posts">
+          Posts
+        </option>
+        <option key="users" value="users">
+          Users
+        </option>
+      </select>
+      {mode === "posts" ? <PostList /> : <UserList />}
     </div>
   );
-}
+};
+const mapStateToProps = (state) => ({
+  mode: getMode(state),
+});
 
-export default App;
+const mapDispatchToProps = {
+  setModeAction: setMode,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(App);
