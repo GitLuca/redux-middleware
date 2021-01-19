@@ -7,8 +7,13 @@ export const getPosts = createSelector([getPostState], (state) =>
   Object.values(state.posts)
 );
 
-export const getUsers= createSelector([getPostState], (state) =>
+export const getUsers = createSelector([getPostState], (state) =>
   Object.values(state.users)
 );
 
-export const getMode = createSelector([getPostState], (state) => state.mode)
+export const getLoading = createSelector(
+  [getPostState],
+  (state) => state.loading
+);
+
+export const getMode = createSelector([getPostState], (state) => state.mode);

@@ -1,5 +1,4 @@
 import { ActionCreatorWithPayload, PayloadAction } from "@reduxjs/toolkit";
-import { Method } from "axios";
 import { setPosts, setUsers, deletePost } from "../store/slice";
 import { ActionMeta, Mode } from "../types";
 

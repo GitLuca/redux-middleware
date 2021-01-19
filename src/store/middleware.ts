@@ -1,32 +1,28 @@
-import { Dispatch, Middleware } from "redux";
-import {
-  ActionApi,
-  API_ACTION,
-  onSuccessMask,
-} from "../api/postApi";
+import { Middleware } from "redux";
+import { ActionApi, API_ACTION, onSuccessMask } from "../api/postApi";
 import axiosInstance from "../axiosInstance";
 import { ActionMeta } from "../types";
+import { setLoading } from "./slice";
 
-export const apiMiddleware: Middleware = (store) => (next) => (
+export const apiMiddleware: Middleware = ({ dispatch }) => (next) => async (
   action: ActionApi
 ) => {
-    console.log('action', action)
-  try {
-    if (action.type === API_ACTION) {
-      return asyncHandler(store.dispatch, action.payload);
-    }
-    return next(action);
-  } catch (error) {
-    console.log("error", error);
+  if (action.type === API_ACTION) {
+    dispatch(setLoading(true));
+    return asyncHandler(action.payload)
+      .then((result) => {
+        const nextAction = onSuccessMask[action.payload.onSuccess];
+        return dispatch(nextAction(result));
+      })
+      .catch((e) => console.log("e", e))
+      .finally(() => dispatch(setLoading(false)));
   }
+  return next(action);
 };
 
-const asyncHandler = async (dispatch: Dispatch, meta: ActionMeta) => {
-  const result = await axiosInstance({
+const asyncHandler = async (meta: ActionMeta) =>
+  axiosInstance({
     method: meta.method,
     url: meta.url,
     data: meta.body,
-  });
-  const action = onSuccessMask[meta.onSuccess];
-  return dispatch(action(result.data));
-};
+  }).then((response) => response.data);

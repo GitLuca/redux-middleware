@@ -37,10 +37,11 @@ export type PostState = {
   posts: Record<number, Post>;
   mode: Mode;
   users: Record<number, User>;
+  loading: boolean
 };
 export type ActionMeta = {
-    url: string;
-    method: Method;
-    onSuccess: string;
-    body: any;
-  };
+  url: string;
+  method: Method;
+  onSuccess: string;
+  body: any;
+};

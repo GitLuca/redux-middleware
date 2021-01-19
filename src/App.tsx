@@ -1,24 +1,26 @@
 import React, { useCallback, useEffect } from "react";
-import { connect, ConnectedProps, useDispatch } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { initFetch } from "./api/postApi";
 import PostList from "./components/Posts/PostList";
 import UserList from "./components/Users/UserList";
-import { getMode } from "./store/selectors";
+import { getLoading, getMode } from "./store/selectors";
 import { setMode } from "./store/slice";
 
-const App = ({ mode, setModeAction }: PropsFromRedux) => {
+const App = ({ mode, setModeAction, loading, fetchAction }: PropsFromRedux) => {
   const handleSelect = useCallback(
     (e) => {
       setModeAction(e.target.value);
     },
     [setModeAction]
   );
-  const dispatch = useDispatch();
 
   useEffect(() => {
-    const meta = initFetch(mode);
-    dispatch(meta);
-  }, [dispatch, mode]);
+    fetchAction(mode)
+  }, [fetchAction, mode]);
+  
+  if (loading) {
+    return <h2>Loading...</h2>;
+  }
 
   return (
     <div className="App">
@@ -36,10 +38,12 @@ const App = ({ mode, setModeAction }: PropsFromRedux) => {
 };
 const mapStateToProps = (state) => ({
   mode: getMode(state),
+  loading: getLoading(state),
 });
 
 const mapDispatchToProps = {
   setModeAction: setMode,
+  fetchAction: initFetch
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

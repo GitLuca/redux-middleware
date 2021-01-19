@@ -1,14 +1,20 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Mode, Post, PostState, User } from "../types";
 
-const initialState: PostState = { posts: {}, mode: "posts", users: {} };
-
-// type CustomPayload<T> =  PayloadAction<{apiReturn: T, meta: ActionMeta}>
+const initialState: PostState = {
+  posts: {},
+  mode: "posts",
+  users: {},
+  loading: false,
+};
 
 const slice = createSlice({
   name: "posts",
   initialState,
   reducers: {
+    setLoading(state, action: PayloadAction<boolean>) {
+      state.loading = action.payload;
+    },
     setPosts(state, action: PayloadAction<Post[]>) {
       const newPosts = action.payload.reduce((acc, post) => {
         return { ...acc, [post.id]: post };
@@ -36,6 +42,6 @@ const slice = createSlice({
   },
 });
 
-export const { setPosts, setUsers, setMode, deletePost } = slice.actions;
+export const { setPosts, setUsers, setMode, deletePost, setLoading } = slice.actions;
 
 export default slice.reducer;
