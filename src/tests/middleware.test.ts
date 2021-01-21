@@ -1,6 +1,6 @@
-import { API_ACTION } from "../../api/postApi";
-import { apiMiddleware } from "../middleware";
-import * as slice from "../slice"
+import { API_ACTION } from "../api/postApi";
+import { apiMiddleware } from "../store/middleware";
+import * as slice from "../store/slice";
 
 const create = (store) => {
   const next = jest.fn();
@@ -10,21 +10,32 @@ const create = (store) => {
   return { store, next, invoke };
 };
 
-//TODO: non so come testare che unSuccess giusta sia chiamata
 describe("test API actions", () => {
-    test('should call error action', async () => {
-        const spyError = jest.spyOn(slice, "setError")
-        const store = {
-            getState: jest.fn(() => ({})),
-            dispatch: jest.fn(),
-          };
-          const { next, invoke } = create(store);
-          const action = { type: API_ACTION, payload: { onSuccess: "wrongString" } };
-          await invoke(action);
-          expect(spyError).toHaveBeenCalled();
-    })
-    
-  test("should not call next", async() => {
+  test("should call onSuccess", async () => {
+    const mockOnSuccess = jest.fn();
+    const store = {
+      getState: jest.fn(() => ({})),
+      dispatch: jest.fn(),
+    };
+    const { invoke } = create(store);
+    const action = { type: API_ACTION, payload: { onSuccess: mockOnSuccess } };
+    await invoke(action);
+    expect(mockOnSuccess).toHaveBeenCalled();
+  });
+
+  test("should call error action", async () => {
+    const spyError = jest.spyOn(slice, "setError");
+    const store = {
+      getState: jest.fn(() => ({})),
+      dispatch: jest.fn(),
+    };
+    const { invoke } = create(store);
+    const action = { type: API_ACTION, payload: { onSuccess: "wrongString" } };
+    await invoke(action);
+    expect(spyError).toHaveBeenCalled();
+  });
+
+  test("should not call next", async () => {
     const store = {
       getState: jest.fn(() => ({})),
       dispatch: jest.fn(),
@@ -45,18 +56,29 @@ describe("test API actions", () => {
     const { invoke } = create(store);
     const action = { type: API_ACTION, payload: { onSuccess: "setUsers" } };
     await invoke(action);
-    expect(mockDispatch).toBeCalledTimes(3);
+    expect(mockDispatch).toBeCalledTimes(4);
   });
 });
 
 describe("test not_api actions", () => {
+  test("should not call onSuccess", async () => {
+    const mockOnSuccess = jest.fn();
+    const store = {
+      getState: jest.fn(() => ({})),
+      dispatch: jest.fn(),
+    };
+    const { invoke } = create(store);
+    const action = { type: "NOT_API", payload: { onSuccess: mockOnSuccess } };
+    await invoke(action);
+    expect(mockOnSuccess).toHaveBeenCalledTimes(0);
+  });
   test("should call next", () => {
     const store = {
       getState: jest.fn(() => ({})),
       dispatch: jest.fn(),
     };
     const { next, invoke } = create(store);
-    const action = { type: "NOT_API", payload:{onSuccess: "setUsers"} };
+    const action = { type: "NOT_API", payload: { onSuccess: "setUsers" } };
     invoke(action);
     expect(next).toHaveBeenCalledWith(action);
   });

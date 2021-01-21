@@ -1,3 +1,4 @@
+import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { Method } from "axios";
 
 export type User = {
@@ -43,6 +44,6 @@ export type PostState = {
 export type ActionMeta = {
   url: string;
   method: Method;
-  onSuccess: string;
+  onSuccess: ActionCreatorWithPayload<any>;
   body: any;
 };
