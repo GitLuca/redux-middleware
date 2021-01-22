@@ -11,12 +11,7 @@ export const apiMiddleware: Middleware = ({ dispatch }) => (next) => async (
     dispatch(setLoading(true));
     return asyncHandler(action.payload)
       .then((result) => {
-<<<<<<< HEAD
-        dispatch(setLoading(false));
         const nextAction = action.payload.onSuccess;
-=======
-        const nextAction = onSuccessMask[action.payload.onSuccess];
->>>>>>> parent of efd705e... testing complete
         return dispatch(nextAction(result));
       })
       .catch((e) => console.log("e", e))
