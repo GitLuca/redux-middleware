@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { fetchUsers, fetchPosts, initFetch } from "../api/postApi";
 import { Mode, Post, PostState, User } from "../types";
 
 export const initialState: PostState = {
@@ -22,20 +23,8 @@ const slice = createSlice({
     setLoading(state, action: PayloadAction<boolean>) {
       state.loading = action.payload;
     },
-    setPosts(state, action: PayloadAction<Post[]>) {
-      const newPosts = action.payload.reduce((acc, post) => {
-        return { ...acc, [post.id]: post };
-      }, {} as Record<number, Post>);
-      state.posts = newPosts;
-    },
     setMode(state, action: PayloadAction<Mode>) {
       state.mode = action.payload;
-    },
-    setUsers(state, action: PayloadAction<User[]>) {
-      const newUsers = action.payload.reduce((acc, user) => {
-        return { ...acc, [user.id]: user };
-      }, {} as Record<number, User>);
-      state.users = newUsers;
     },
     deletePost(state, action: PayloadAction<number>) {
       if (state.mode === "posts") {
@@ -49,22 +38,40 @@ const slice = createSlice({
       }
     },
     deleteAllUsers(state) {
-        if(state.mode === "users") {
-            state.users = {}
-        }
-    }
+      if (state.mode === "users") {
+        state.users = {};
+      }
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchPosts.fulfilled, (state, action) => {
+      const newPosts = action.payload.reduce((acc, post) => {
+        return { ...acc, [post.id]: post };
+      }, {} as Record<number, Post>);
+      state.posts = newPosts;
+    })
+    builder.addCase(fetchUsers.fulfilled, (state, action) => {
+      const newUsers = action.payload.reduce((acc, user) => {
+        return { ...acc, [user.id]: user };
+      }, {} as Record<number, User>);
+      state.users = newUsers;
+    })
+    builder.addCase(initFetch.fulfilled, (state, action) => {
+      // const newUsers = action.payload.reduce((acc, user) => {
+      //   return { ...acc, [user.id]: user };
+      // }, {} as Record<number, User>);
+      // state.users = newUsers;
+    })
   },
 });
 
 export const {
-  setPosts,
-  setUsers,
   setMode,
   deletePost,
   setLoading,
   setError,
   clearErrors,
-  deleteAllUsers
+  deleteAllUsers,
 } = slice.actions;
 
 export default slice.reducer;

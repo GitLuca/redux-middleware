@@ -1,12 +1,18 @@
 import React, { useCallback, useEffect } from "react";
 import { connect, ConnectedProps } from "react-redux";
-import { initFetch } from "./api/postApi";
+import { fetchPosts, fetchUsers, initFetch } from "./api/postApi";
 import PostList from "./components/Posts/PostList";
 import UserList from "./components/Users/UserList";
 import { getLoading, getMode } from "./store/selectors";
 import { setMode } from "./store/slice";
 
-const App = ({ mode, setModeAction, loading, fetchAction }: PropsFromRedux) => {
+const App = ({
+  mode,
+  setModeAction,
+  loading,
+  fetchPostsAction,
+  fetchUsersAction,
+}: PropsFromRedux) => {
   const handleSelect = useCallback(
     (e) => {
       setModeAction(e.target.value);
@@ -15,9 +21,14 @@ const App = ({ mode, setModeAction, loading, fetchAction }: PropsFromRedux) => {
   );
 
   useEffect(() => {
-    fetchAction(mode)
-  }, [fetchAction, mode]);
-  
+    if (mode === "posts") {
+      fetchPostsAction();
+    } else {
+      fetchUsersAction();
+    }
+    // fetchAction()
+  }, [mode]);
+
   if (loading) {
     return <h2>Loading...</h2>;
   }
@@ -43,7 +54,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   setModeAction: setMode,
-  fetchAction: initFetch
+  fetchPostsAction: fetchPosts,
+  fetchUsersAction: fetchUsers,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
