@@ -1,6 +1,27 @@
 import reducer, { initialState, deletePost } from "../store/slice";
 import { posts } from "../testData";
 import { PostState } from "../types";
+import {rest} from "msw"
+import {setupServer} from "msw/node"
+
+const server = setupServer(
+  rest.get(
+      '*',
+      (_, res, ctx) => {
+          return res(ctx.status(200))
+      }
+  ),
+)
+
+beforeAll(
+  () => (
+      server.listen()
+  )
+)
+afterAll(() => server.close())
+afterEach(() => {
+  server.resetHandlers()
+})
 
 // this is a interesting test because it needs a setup for the state
 describe("test delete all users", () => {
