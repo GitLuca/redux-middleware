@@ -39,7 +39,6 @@ export type PostState = {
   mode: Mode;
   users: Record<number, User>;
   loading: boolean
-  error: string[]
 };
 export type ActionMeta = {
   url: string;

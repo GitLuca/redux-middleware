@@ -6,19 +6,12 @@ export const initialState: PostState = {
   mode: "posts",
   users: {},
   loading: false,
-  error: [],
 };
 
 const slice = createSlice({
   name: "posts",
   initialState,
   reducers: {
-    setError(state, action: PayloadAction<string>) {
-      state.error.push(action.payload);
-    },
-    clearErrors(state) {
-      state.error = [];
-    },
     setLoading(state, action: PayloadAction<boolean>) {
       state.loading = action.payload;
     },
@@ -56,15 +49,6 @@ const slice = createSlice({
   },
 });
 
-export const {
-  setPosts,
-  setUsers,
-  setMode,
-  deletePost,
-  setLoading,
-  setError,
-  clearErrors,
-  deleteAllUsers
-} = slice.actions;
+export const { setPosts, setUsers, setMode, deletePost, setLoading } = slice.actions;
 
 export default slice.reducer;
