@@ -1,9 +1,6 @@
-import { createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import axiosInstance from "../axiosInstance";
-import { getMode } from "../store/selectors";
+import { PayloadAction } from "@reduxjs/toolkit";
 import { deletePost, setPosts, setUsers } from "../store/slice";
-import { RootState } from "../store/store";
-import { ActionMeta, Mode, Post, PostState, User } from "../types";
+import { ActionMeta, Mode } from "../types";
 
 export const API_ACTION = "api";
 

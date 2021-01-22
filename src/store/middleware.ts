@@ -2,7 +2,7 @@ import { Middleware } from "redux";
 import { ActionApi, API_ACTION } from "../api/postApi";
 import axiosInstance from "../axiosInstance";
 import { ActionMeta } from "../types";
-import { setLoading } from "./slice";
+import { setLoading, setError } from "./slice";
 
 export const apiMiddleware: Middleware = ({ dispatch }) => (next) => async (
   action: ActionApi
@@ -14,7 +14,7 @@ export const apiMiddleware: Middleware = ({ dispatch }) => (next) => async (
         const nextAction = action.payload.onSuccess;
         return dispatch(nextAction(result));
       })
-      .catch((e) => console.log("e", e))
+      .catch((e) =>  dispatch(setError(e.message)))
       .finally(() => dispatch(setLoading(false)));
   }
   return next(action);

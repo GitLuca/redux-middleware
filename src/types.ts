@@ -38,8 +38,10 @@ export type PostState = {
   posts: Record<number, Post>;
   mode: Mode;
   users: Record<number, User>;
-  loading: boolean
+  loading: boolean;
+  error: string[];
 };
+
 export type ActionMeta = {
   url: string;
   method: Method;

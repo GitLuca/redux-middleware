@@ -23,17 +23,17 @@ describe("test API actions", () => {
     expect(mockOnSuccess).toHaveBeenCalled();
   });
 
-  // test("should call error action", async () => {
-  //   const spyError = jest.spyOn(slice, "setError");
-  //   const store = {
-  //     getState: jest.fn(() => ({})),
-  //     dispatch: jest.fn(),
-  //   };
-  //   const { invoke } = create(store);
-  //   const action = { type: API_ACTION, payload: { onSuccess: "wrongString" } };
-  //   await invoke(action);
-  //   expect(spyError).toHaveBeenCalled();
-  // });
+  test("should call error action", async () => {
+    const spyError = jest.spyOn(slice, "setError");
+    const store = {
+      getState: jest.fn(() => ({})),
+      dispatch: jest.fn(),
+    };
+    const { invoke } = create(store);
+    const action = { type: API_ACTION, payload: { onSuccess: "wrongString" } };
+    await invoke(action);
+    expect(spyError).toHaveBeenCalled();
+  });
 
   test("should not call next", async () => {
     const store = {
@@ -41,7 +41,6 @@ describe("test API actions", () => {
       dispatch: jest.fn(),
     };
     const { next, invoke } = create(store);
-    //TODO: iìI don't like writing the right string "setUsers"
     const action = { type: API_ACTION, payload: { onSuccess: jest.fn() } };
     await invoke(action);
     expect(next).toBeCalledTimes(0);
