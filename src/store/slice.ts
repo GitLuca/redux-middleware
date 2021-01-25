@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Mode, Post, PostState, User } from "../types";
 
-const initialState: PostState = {
+export const initialState: PostState = {
   posts: {},
   mode: "posts",
   users: {},
   loading: false,
-  error: [],
+  error: []
 };
 
 const slice = createSlice({
@@ -38,25 +38,24 @@ const slice = createSlice({
       state.users = newUsers;
     },
     deletePost(state, action: PayloadAction<number>) {
-      const newPosts = Object.values(state.posts).reduce((acc, post) => {
-        if (post.id === action.payload) {
-          return acc;
-        }
-        return { ...acc, [post.id]: post };
-      }, {});
-      state.posts = newPosts;
+      if (state.mode === "posts") {
+        const newPosts = Object.values(state.posts).reduce((acc, post) => {
+          if (post.id === action.payload) {
+            return acc;
+          }
+          return { ...acc, [post.id]: post };
+        }, {});
+        state.posts = newPosts;
+      }
     },
+    deleteAllUsers(state) {
+        if(state.mode === "users") {
+            state.users = {}
+        }
+    }
   },
 });
 
-export const {
-  setPosts,
-  setUsers,
-  setMode,
-  deletePost,
-  setLoading,
-  setError,
-  clearErrors
-} = slice.actions;
+export const { setPosts, setUsers, setMode, deletePost, setLoading, setError, clearErrors } = slice.actions;
 
 export default slice.reducer;

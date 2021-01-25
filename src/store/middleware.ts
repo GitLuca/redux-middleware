@@ -1,5 +1,5 @@
 import { Middleware } from "redux";
-import { ActionApi, API_ACTION, onSuccessMask } from "../api/postApi";
+import { ActionApi, API_ACTION } from "../api/postApi";
 import axiosInstance from "../axiosInstance";
 import { ActionMeta } from "../types";
 import { setLoading, setError } from "./slice";
@@ -11,14 +11,11 @@ export const apiMiddleware: Middleware = ({ dispatch }) => (next) => async (
     dispatch(setLoading(true));
     return asyncHandler(action.payload)
       .then((result) => {
-        dispatch(setLoading(false));
-        const nextAction = onSuccessMask[action.payload.onSuccess];
+        const nextAction = action.payload.onSuccess;
         return dispatch(nextAction(result));
       })
-      .catch((e) => {
-        dispatch(setError(e.message));
-        dispatch(setLoading(false));
-      });
+      .catch((e) =>  dispatch(setError(e.message)))
+      .finally(() => dispatch(setLoading(false)));
   }
   return next(action);
 };

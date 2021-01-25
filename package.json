@@ -49,9 +49,7 @@
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
-    "@types/react-redux": "^7.1.15"
-  },
-  "jest": {
-    "preset": "ts-jest"
+    "@types/react-redux": "^7.1.15",
+    "msw": "^0.25.0"
   }
 }
