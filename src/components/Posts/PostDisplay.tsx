@@ -10,8 +10,8 @@ export type PostProps = PropsFromRedux & {
 export const PostDisplay = ({ post }: PostProps) => {
   const handleDelete = useCallback(() => {
     // deletePost(post.id);
-  }, [ post.id]);
-  
+  }, [post.id]);
+
   return (
     <div>
       <h4>{post.title}</h4>

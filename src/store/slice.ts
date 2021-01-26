@@ -26,17 +26,6 @@ const slice = createSlice({
     setMode(state, action: PayloadAction<Mode>) {
       state.mode = action.payload;
     },
-    deletePost(state, action: PayloadAction<number>) {
-      if (state.mode === "posts") {
-        const newPosts = Object.values(state.posts).reduce((acc, post) => {
-          if (post.id === action.payload) {
-            return acc;
-          }
-          return { ...acc, [post.id]: post };
-        }, {});
-        state.posts = newPosts;
-      }
-    },
     deleteAllUsers(state) {
       if (state.mode === "users") {
         state.users = {};
@@ -56,18 +45,17 @@ const slice = createSlice({
       }, {} as Record<number, User>);
       state.users = newUsers;
     })
-    builder.addCase(initFetch.fulfilled, (state, action) => {
+    // builder.addCase(initFetch.fulfilled, (state, action) => {
       // const newUsers = action.payload.reduce((acc, user) => {
       //   return { ...acc, [user.id]: user };
       // }, {} as Record<number, User>);
       // state.users = newUsers;
-    })
+    // })
   },
 });
 
 export const {
   setMode,
-  deletePost,
   setLoading,
   setError,
   clearErrors,
