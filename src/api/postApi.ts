@@ -33,7 +33,7 @@ export const fetchPosts = (): ActionApi => ({
   payload: {
     url: "/posts",
     method: "get",
-    onSuccess:setPosts,
+    onSuccess: setPosts,
     body: {},
   },
 });

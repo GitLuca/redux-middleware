@@ -1,29 +1,22 @@
-import reducer, { initialState, deletePost } from "../store/slice";
-import { posts } from "../testData";
+import reducer, { initialState, deletePost, setPosts, setUsers } from "../store/slice";
+import { posts, users } from "../testData";
 import { PostState } from "../types";
-import {rest} from "msw"
-import {setupServer} from "msw/node"
 
-const server = setupServer(
-  rest.get(
-      '*',
-      (_, res, ctx) => {
-          return res(ctx.status(200))
-      }
-  ),
-)
+// here I can simply test the reducer without dispatching the thunk
+test("should add posts to the state", () => {
+  const postsObj = posts.reduce((acc, p) => ({ ...acc, [p.id]: p }), {});
+  const correctState = { ...initialState, posts: postsObj };
+  const newState = reducer(initialState, setPosts(posts));
+  expect(newState).toEqual(correctState);
+});
 
-beforeAll(
-  () => (
-      server.listen()
-  )
-)
-afterAll(() => server.close())
-afterEach(() => {
-  server.resetHandlers()
-})
+test("should add users to the state", () => {
+  const usersObj = users.reduce((acc, u) => ({ ...acc, [u.id]: u }), {});
+  const correctState = { ...initialState, users: usersObj };
+  const newState = reducer(initialState, setUsers(users));
+  expect(newState).toEqual(correctState);
+});
 
-// this is a interesting test because it needs a setup for the state
 describe("test delete all users", () => {
   const oldState = {
     ...initialState,
@@ -43,3 +36,5 @@ describe("test delete all users", () => {
     expect(stateToCheck).toEqual(userState);
   });
 });
+
+
